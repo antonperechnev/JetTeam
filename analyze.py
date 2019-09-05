@@ -54,6 +54,17 @@ def list_to_dictlist(raw_data: list, consumption=0):
     return prod
 
 
+def ts_analyze(c_id):
+    one_car = df.loc[df['id'] == c_id]
+    one_car['time delta'] = one_car['timestamp'].diff().fillna(0).shift(-1).fillna(0)
+    one_car['change liters'] = one_car['liters'].diff().fillna(0).shift(-1).fillna(0)
+    consum = one_car[(one_car['change liters'] <= 2) | (one_car['change liters'] >= 2)]
+    return consum.head()
+
+
+print(ts_analyze("d28378aec6bd1214b87047f2af506f70"))
+
+
 def one_ts_analyze(c_id):
     for_df = []
     consum = []
@@ -93,7 +104,7 @@ def one_ts_analyze(c_id):
     # return (pd.to_datetime(row['timestamp']).timestamp() - pd.to_datetime(st_time).timestamp())/60
 
 
-print(one_ts_analyze("d28378aec6bd1214b87047f2af506f70"))
+# print(one_ts_analyze("d28378aec6bd1214b87047f2af506f70"))
 
 
 # return (pd.to_datetime(row['timestamp']).timestamp() - pd.to_datetime(st_time).timestamp())/60
